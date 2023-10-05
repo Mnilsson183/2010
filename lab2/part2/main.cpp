@@ -24,7 +24,7 @@ void printDisplay(){
             if (display[i][j] == false){
                 cout << ' ';
             } else{
-                cout << "*";
+                cout << '*';
             }
         }
         cout << "|";
@@ -36,9 +36,44 @@ void printDisplay(){
     cout << endl;
 }
 
+void checkNext(int y, int x, bool[][] tempDisplay){
+    short numberOfFriends;
+    if (y - 1 >= 0){
+        if(display[y - 1][x] == true) numberOfFriends++;
+    }
+    if(y + 1 <= HEIGHT){
+        if(display[y + 1][x] == true) numberOfFriends++;
+    }
+    if(x - 1 >= 0){
+        if(display[y][x - 1] == true) numberOfFriends++;
+    }
+    if(x + 1 <= WIDTH){
+        if(display[y][x + 1] == true) numberOfFriends++;
+    }
+
+    // corners
+    if (y - 1 >=0 && x - 1 >= 0){
+        if(display[y - 1][x - 1] == true) numberOfFriends++;
+    }
+    if (y + 1 <= HEIGHT && x + 1 <= WIDTH){
+        if(display[y + 1][x + 1] == true) numberOfFriends++;
+    }
+    if (y - 1 >= 0 && x + 1 <= WIDTH){
+        if(display[y - 1][x + 1] == true) numberOfFriends++;
+    }
+    if (y + 1 <= HEIGHT && x - 1 >= 0){
+        if(display[y + 1][x - 1] == true) numberOfFriends++;
+    }
+}
 
 void generation(){
     bool tempDisplay[HEIGHT][WIDTH];
+
+    for (int i = 0; i < HEIGHT; i++){
+        for(int j = 0; j < WIDTH; j++){
+            checkNext(i, j, tempDisplay);
+        }
+    }
 }
 
 int main(void){
