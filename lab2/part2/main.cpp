@@ -12,7 +12,7 @@ using namespace std;
 const int HEIGHT = 40;
 const int WIDTH = 100;
 bool display[HEIGHT][WIDTH];
-bool tempDisplay[HEIGHT][WIDTH];
+bool nextDisplay[HEIGHT][WIDTH];
 
 void printDisplay(){
     for(int i = 0; i < WIDTH + 1; i++){
@@ -66,10 +66,10 @@ void checkNext(int y, int x){
         if(display[y + 1][x - 1] == true) numberOfFriends++;
     }
 
-    if (numberOfFriends < 2) tempDisplay[y][x] = false;
-    else if(display[y][x] == true && (numberOfFriends == 2 || numberOfFriends == 3)) tempDisplay[y][x] = true;
-    else if(display[y][x] == false && numberOfFriends == 3) tempDisplay[y][x] = true;
-    else if(display[y][x] == true && numberOfFriends > 3) tempDisplay[y][x] = false;
+    if (numberOfFriends < 2) nextDisplay[y][x] = false;
+    else if(display[y][x] == true && (numberOfFriends == 2 || numberOfFriends == 3)) nextDisplay[y][x] = true;
+    else if(display[y][x] == false && numberOfFriends == 3) nextDisplay[y][x] = true;
+    else if(display[y][x] == true && numberOfFriends > 3) nextDisplay[y][x] = false;
 
 }
 
@@ -80,7 +80,11 @@ void generation(){
             checkNext(i, j);
         }
     }
-    // swap display pointers
+    for (int i = 0; i < HEIGHT; i++){
+        for (int j = 0; j < WIDTH; j++){
+            display[i][j] = nextDisplay[i][j];
+        }
+    }
 }
 
 int main(void){
@@ -99,6 +103,6 @@ int main(void){
         if (c == 'q'){
             return 0;
         }
-        generation();
+        //display = generation();
     }
 }
