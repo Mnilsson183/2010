@@ -88,7 +88,6 @@ void generation(){
             checkNext(i, j);
         }
     }
-    printDisplay();
 }
 
 int main(void){
@@ -111,5 +110,6 @@ int main(void){
             return 0;
         }
         generation();
+        printDisplay();
     }
 }
