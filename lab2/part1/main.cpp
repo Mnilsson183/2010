@@ -53,11 +53,14 @@ void playGame(void){
     int wager;
     cout << "You have " << credits << " credits. How much do you wager? ";
     cin >> wager;
+    while (wager < 0 || wager > credits || !isdigit(wager)){
+        cin >> wager;
+    }
     int winner = gameThrow();
     credits = credits + (wager * winner);
     if (winner == 1){
         cout << "Player Wins" << endl << endl;
-        cout << "You have won " << wager << " credits. Your new balance is now " << credits << " credits";
+        cout << "You have won " << wager << " credits. Your new balance is now " << credits << " credits" << endl;
     } else {
         cout << "Player Loses" << endl << endl;
         cout << "You have lost " << wager << " credits. Your new balance is now " << credits << " credits" << endl;
