@@ -12,6 +12,7 @@ using namespace std;
 const int HEIGHT = 40;
 const int WIDTH = 100;
 bool display[HEIGHT][WIDTH];
+bool tempDisplay[HEIGHT][WIDTH];
 
 void printDisplay(){
     for(int i = 0; i < WIDTH + 1; i++){
@@ -36,7 +37,7 @@ void printDisplay(){
     cout << endl;
 }
 
-void checkNext(int y, int x, bool[][] tempDisplay){
+void checkNext(int y, int x){
     short numberOfFriends;
     if (y - 1 >= 0){
         if(display[y - 1][x] == true) numberOfFriends++;
@@ -64,16 +65,22 @@ void checkNext(int y, int x, bool[][] tempDisplay){
     if (y + 1 <= HEIGHT && x - 1 >= 0){
         if(display[y + 1][x - 1] == true) numberOfFriends++;
     }
+
+    if (numberOfFriends < 2) tempDisplay[y][x] = false;
+    else if(display[y][x] == true && (numberOfFriends == 2 || numberOfFriends == 3)) tempDisplay[y][x] = true;
+    else if(display[y][x] == false && numberOfFriends == 3) tempDisplay[y][x] = true;
+    else if(display[y][x] == true && numberOfFriends > 3) tempDisplay[y][x] = false;
+
 }
 
 void generation(){
-    bool tempDisplay[HEIGHT][WIDTH];
 
     for (int i = 0; i < HEIGHT; i++){
         for(int j = 0; j < WIDTH; j++){
-            checkNext(i, j, tempDisplay);
+            checkNext(i, j);
         }
     }
+    // swap display pointers
 }
 
 int main(void){
