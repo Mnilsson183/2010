@@ -4,7 +4,7 @@
 using namespace std;
 
 const int HEIGHT = 40;
-const int WIDTH = 100;
+const int WIDTH = 40;
 bool display[HEIGHT][WIDTH];
 bool nextDisplay[HEIGHT][WIDTH];
 
@@ -17,7 +17,7 @@ void printDisplay(){
         if(i != 0) cout << endl;
         cout << " |";
         for(int j = 0; j < WIDTH; j++){
-            if (nextDisplay[i][j] == false){
+            if (display[i][j] == false){
                 cout << ' ';
             } else{
                 cout << '*';
@@ -30,18 +30,42 @@ void printDisplay(){
         cout << "¯";
     }
     cout << endl;
-
-    for (int i = 0; i < HEIGHT; i++){
-        for (int j = 0; j < WIDTH; j++){
-            display[i][j] = nextDisplay[i][j];
-        }
-    }
 }
+
+void debugDisplay(){
+    cout << "Main display" << endl;
+    for (int i = 0; i < HEIGHT; i++){
+        for(int j = 0; j < WIDTH; j++){
+            if (display[i][j] == true){
+                cout << "| ";
+            } else{
+                cout << "_ ";
+            }
+        }
+        cout << endl;
+    }
+
+
+    // cout << "Next display" << endl;
+    // for (int i = 0; i < HEIGHT; i++){
+    //     for(int j = 0; j < WIDTH; j++){
+    //         if (nextDisplay[i][j] == true){
+    //             cout << "| ";
+    //         } else{
+    //             cout << "_ ";
+    //         }
+    //     }
+    //     cout << endl;
+    // }
+}
+
+
 
 void checkNext(int y, int x){
     short numberOfFriends;
     if (y - 1 >= 0){
         if(display[y - 1][x] == true) numberOfFriends++;
+        cout << "Cell at" << x << ',' << y << "has a friend down one"
     }
     if(y + 1 <= HEIGHT){
         if(display[y + 1][x] == true) numberOfFriends++;
@@ -74,10 +98,21 @@ void checkNext(int y, int x){
     Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
 */
 
+    // Any live cell with fewer than two live neighbors dies as if caused by underpopulation.
     if (numberOfFriends < 2) nextDisplay[y][x] = false;
+    // Any live cell with two or three live neighbors lives on to the next generation.
     else if((alive == true) && (numberOfFriends == 2 || numberOfFriends == 3)) nextDisplay[y][x] = true;
+    // Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
     else if((alive == false) && numberOfFriends == 3) nextDisplay[y][x] = true;
+    //Any live cell with more than three live neighbors dies, as if by overpopulation.
     else if((alive == true) && numberOfFriends > 3) nextDisplay[y][x] = false;
+
+    if (nextDisplay[y][x]){
+        cout << "Cell at " << x << ',' << y << "  NUMBER OF FRIENDS: " << numberOfFriends << " ALIVE LAST? " <<  alive << " ALIVE NEXT? " << nextDisplay[y][x] << endl;
+    }
+    if (alive){
+
+    }
 
 }
 
@@ -86,6 +121,12 @@ void generation(){
     for (int i = 0; i < HEIGHT; i++){
         for(int j = 0; j < WIDTH; j++){
             checkNext(i, j);
+        }
+    }
+
+    for (int i = 0; i < HEIGHT; i++){
+        for (int j = 0; j < WIDTH; j++){
+            display[i][j] = nextDisplay[i][j];
         }
     }
 }
@@ -98,12 +139,12 @@ int main(void){
         }
     }
     display[HEIGHT / 2][WIDTH / 2] = true;
-        nextDisplay[10][10] = true;
-        nextDisplay[11][11] = true;
-        nextDisplay[10][11] = true;
-        nextDisplay[11][10] = true;
+    display[10][10] = true;
+    display[11][11] = true;
+    display[10][11] = true;
+    display[11][10] = true;
 
-        printDisplay();
+    printDisplay();
     while(true){
         char c = cin.get();
         if (c == 'q'){
