@@ -75,9 +75,9 @@ void checkNext(int y, int x){
 */
 
     if (numberOfFriends < 2) nextDisplay[y][x] = false;
-    else if((alive == true) && (numberOfFriends == 2 || numberOfFriends == 3)) nextDisplay[y][x] = true;
-    else if((alive == false) && numberOfFriends == 3) nextDisplay[y][x] = true;
-    else if((alive == true) && numberOfFriends > 3) nextDisplay[y][x] = false;
+    else if((alive) && (numberOfFriends == 2 || numberOfFriends == 3)) nextDisplay[y][x] = true;
+    else if((alive) && numberOfFriends > 3) nextDisplay[y][x] = false;
+    else if((!alive) && numberOfFriends == 3) nextDisplay[y][x] = true;
 
 }
 
