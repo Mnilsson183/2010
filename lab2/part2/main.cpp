@@ -39,17 +39,18 @@ void printDisplay(){
 }
 
 void checkNext(int y, int x){
-    short numberOfFriends;
+    short numberOfFriends
+    // straight angles
     if (y - 1 >= 0){
         if(display[y - 1][x] == true) numberOfFriends++;
     }
-    if(y + 1 <= HEIGHT){
+    if(y + 1 <= HEIGHT - 1){
         if(display[y + 1][x] == true) numberOfFriends++;
     }
     if(x - 1 >= 0){
         if(display[y][x - 1] == true) numberOfFriends++;
     }
-    if(x + 1 <= WIDTH){
+    if(x + 1 <= WIDTH - 1){
         if(display[y][x + 1] == true) numberOfFriends++;
     }
 
@@ -91,19 +92,21 @@ void generation(){
 }
 
 int main(void){
-    // init to blanks
+    // the first display to all blanks
     for(int i = 0; i < HEIGHT; i++){
         for(int j = 0; j < WIDTH; j++){
             display[i][j] = false;
         }
-    }
+    // some small test cases
     display[HEIGHT / 2][WIDTH / 2] = true;
-        nextDisplay[10][10] = true;
-        nextDisplay[11][11] = true;
-        nextDisplay[10][11] = true;
-        nextDisplay[11][10] = true;
+    display[10][10] = true;
+    display[11][11] = true;
+    display[10][11] = true;
+    display[11][10] = true;
 
-        printDisplay();
+    // display the first frame of the simulation
+    printDisplay();
+    // run the quit logic
     while(true){
         char c = cin.get();
         if (c == 'q'){
