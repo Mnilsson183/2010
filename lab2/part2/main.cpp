@@ -58,13 +58,13 @@ void checkNext(int y, int x){
     if ((y - 1 >=0) && (x - 1 >= 0)){
         if(display[y - 1][x - 1] == true) numberOfFriends++;
     }
-    if ((y + 1 <= HEIGHT) && (x + 1 <= WIDTH)){
+    if ((y + 1 <= HEIGHT - 1) && (x + 1 <= WIDTH - 1)){
         if(display[y + 1][x + 1] == true) numberOfFriends++;
     }
-    if ((y - 1 >= 0) && (x + 1 <= WIDTH)){
+    if ((y - 1 >= 0) && (x + 1 <= WIDTH - 1)){
         if(display[y - 1][x + 1] == true) numberOfFriends++;
     }
-    if ((y + 1 <= HEIGHT) && (x - 1 >= 0)){
+    if ((y + 1 <= HEIGHT - 1) && (x - 1 >= 0)){
         if(display[y + 1][x - 1] == true) numberOfFriends++;
     }
     bool alive = display[y][x];
