@@ -5,6 +5,11 @@ using namespace std;
 
 const int HEIGHT = 40;
 const int WIDTH = 100;
+/*
+    Display is for the current state of the program 
+    NextDisplay is the intermediate state of the program before pushing to display
+*/
+
 bool display[HEIGHT][WIDTH];
 bool nextDisplay[HEIGHT][WIDTH];
 
@@ -17,7 +22,7 @@ void printDisplay(){
         if(i != 0) cout << endl;
         cout << " |";
         for(int j = 0; j < WIDTH; j++){
-            if (nextDisplay[i][j] == false){
+            if (display[i][j] == false){
                 cout << ' ';
             } else{
                 cout << '*';
@@ -30,16 +35,10 @@ void printDisplay(){
         cout << "¯";
     }
     cout << endl;
-
-    for (int i = 0; i < HEIGHT; i++){
-        for (int j = 0; j < WIDTH; j++){
-            display[i][j] = nextDisplay[i][j];
-        }
-    }
 }
 
 void checkNext(int y, int x){
-    short numberOfFriends
+    short numberOfFriends;
     // straight angles
     if (y - 1 >= 0){
         if(display[y - 1][x] == true) numberOfFriends++;
@@ -89,6 +88,12 @@ void generation(){
             checkNext(i, j);
         }
     }
+
+    for (int i = 0; i < HEIGHT; i++){
+        for (int j = 0; j < WIDTH; j++){
+            display[i][j] = nextDisplay[i][j];
+        }
+    }
 }
 
 int main(void){
@@ -97,6 +102,7 @@ int main(void){
         for(int j = 0; j < WIDTH; j++){
             display[i][j] = false;
         }
+    }
     // some small test cases
     display[HEIGHT / 2][WIDTH / 2] = true;
     display[10][10] = true;
