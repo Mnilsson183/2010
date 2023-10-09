@@ -114,7 +114,8 @@ int main(void){
     printDisplay();
     // run the quit logic
     while(true){
-        char c = cin.get();
+        char c;
+        cin >> c;
         if (c == 'q'){
             return 0;
         }
