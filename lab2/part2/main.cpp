@@ -42,16 +42,19 @@ void checkNext(int y, int x){
     // straight angles
     if (y - 1 >= 0){
         if(display[y - 1][x] == true) numberOfFriends++;
-        cout << "Cell at" << x << ',' << y << "has a friend down one"
+        cout << "Cell at" << x << ',' << y << "has a friend down one" << endl;
     }
     if(y + 1 <= HEIGHT - 1){
         if(display[y + 1][x] == true) numberOfFriends++;
+        cout << "Cell at" << x << ',' << y << "has a friend up one" << endl;
     }
     if(x - 1 >= 0){
         if(display[y][x - 1] == true) numberOfFriends++;
+        cout << "Cell at" << x << ',' << y << "has a friend left one" << endl;
     }
     if(x + 1 <= WIDTH - 1){
         if(display[y][x + 1] == true) numberOfFriends++;
+        cout << "Cell at" << x << ',' << y << "has a friend right one" << endl;
     }
 
     // corners
