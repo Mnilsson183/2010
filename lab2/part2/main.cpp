@@ -3,8 +3,10 @@
 
 using namespace std;
 
-const short HEIGHT = 100;
-const short WIDTH = 100;
+const short HEIGHT = 40;
+const short WIDTH = 90;
+int gen = 0;
+
 /*
     Display is for the current state of the program 
     NextDisplay is the intermediate state of the program before pushing to display
@@ -36,11 +38,13 @@ void printDisplay(){
         printw("¯");
     }
     printw("\n");
+    printw("Generation %d.", gen);
     refresh();
 }
 
 void checkNext(int y, int x){
     short numberOfFriends = 0;
+
     // straight angles
     if (y - 1 >= 0)           if(display[y - 1][x] == true) numberOfFriends++;
     if(y + 1 <= HEIGHT - 1)   if(display[y + 1][x] == true) numberOfFriends++;
@@ -61,6 +65,7 @@ void checkNext(int y, int x){
         if(display[y + 1][x - 1] == true) numberOfFriends++;
     }
     bool alive = display[y][x];
+    
 /*
     Any live cell with fewer than two live neighbors dies as if caused by underpopulation.
     Any live cell with two or three live neighbors lives on to the next generation.
@@ -68,7 +73,6 @@ void checkNext(int y, int x){
     Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
 */
 
-    // Any live cell with fewer than two live neighbors dies as if caused by underpopulation.
     if (numberOfFriends < 2) nextDisplay[y][x] = false;
     else if((alive == true) && (numberOfFriends == 2 || numberOfFriends == 3)) nextDisplay[y][x] = true;
     else if((alive == false) && numberOfFriends == 3) nextDisplay[y][x] = true;
@@ -116,6 +120,7 @@ int main(void){
             return 0;
         }
         generation();
+        gen++;
         printDisplay();
     }
     endwin();
