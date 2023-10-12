@@ -137,13 +137,6 @@ int main(void){
             display[i][j] = false;
         }
     }
-    // some small test cases
-    display[HEIGHT / 2][WIDTH / 2] = true;
-    display[4][4] = true;
-    display[5][5] = true;
-    display[4][5] = true;
-    display[5][4] = true;
-    display[10][10] = true;
 
     // display the first frame of the simulation
     printDisplay();
