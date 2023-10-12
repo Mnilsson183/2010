@@ -3,8 +3,8 @@
 
 using namespace std;
 
-#define HEIGHT = 40;
-#define WIDTH = 100;
+const short HEIGHT = 10;
+const short WIDTH = 10;
 /*
     Display is for the current state of the program 
     NextDisplay is the intermediate state of the program before pushing to display
@@ -119,11 +119,11 @@ int main(void){
         }
     }
     // some small test cases
-    display[HEIGHT / 2][WIDTH / 2] = true;
-    display[10][10] = true;
-    display[11][11] = true;
-    display[10][11] = true;
-    display[11][10] = true;
+    //display[HEIGHT / 2][WIDTH / 2] = true;
+    display[4][4] = true;
+    display[5][5] = true;
+    display[4][5] = true;
+    display[5][4] = true;
 
     // display the first frame of the simulation
     printDisplay();
