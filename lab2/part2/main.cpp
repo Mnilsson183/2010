@@ -96,7 +96,15 @@ void generation(){
 }
 
 void checkDisplayToPaste(int mouse_x, int mouse_y){
-    
+    for(int y = 0; y < HEIGHT; y++){
+        for(int x = 0; x < WIDTH; x++){
+            if((y == mouse_y) && (x == mouse_x)){
+                display[y][x] = true;
+                printDisplay();
+                return;
+            }
+        }
+    }
 }
 
 int makeInitLayout(void){
@@ -110,7 +118,7 @@ int makeInitLayout(void){
     while(true){
         ch = getch();
 
-        checkDisplayToPaste();
+        checkDisplayToPaste(event.x, event.y);
 
         if(ch == 'q'){
             gen++;
