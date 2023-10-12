@@ -109,7 +109,7 @@ int makeInitLayout(void){
             if(getmouse(&event) == OK){
                 if(event.bstate & BUTTON1_CLICKED){
                     mvprintw(event.y, event.x, "*");
-
+                    refresh();
                 }
             }
         } else if(ch == 'q'){
@@ -141,7 +141,10 @@ int main(void){
     char c; 
     // run the quit logic
     while(true){
-        c = getch();
+        mousemask(0, NULL);
+        // while(c == KEY_MOUSE){
+            c = getch();
+        //}
         if (c == 'q'){
             endwin();
             return 0;
