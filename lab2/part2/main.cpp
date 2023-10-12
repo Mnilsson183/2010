@@ -44,19 +44,19 @@ void checkNext(int y, int x){
     // straight angles
     if (y - 1 >= 0){
         if(display[y - 1][x] == true) numberOfFriends++;
-        //cout << "Cell at" << x << ',' << y << "has a friend down one" << endl;
+        //cout << "Cell at" << x << ',' << y << "has a friend down one ";
     }
     if(y + 1 <= HEIGHT - 1){
         if(display[y + 1][x] == true) numberOfFriends++;
-        //cout << "Cell at" << x << ',' << y << "has a friend up one" << endl;
+        //cout << "Cell at" << x << ',' << y << "has a friend up one ";
     }
     if(x - 1 >= 0){
         if(display[y][x - 1] == true) numberOfFriends++;
-        //cout << "Cell at" << x << ',' << y << "has a friend left one" << endl;
+        //cout << "Cell at" << x << ',' << y << "has a friend left one ";
     }
     if(x + 1 <= WIDTH - 1){
         if(display[y][x + 1] == true) numberOfFriends++;
-        //cout << "Cell at" << x << ',' << y << "has a friend right one" << endl;
+        //cout << "Cell at" << x << ',' << y << "has a friend right one ";
     }
 
     // corners
@@ -87,12 +87,11 @@ void checkNext(int y, int x){
     else if((alive == true) && numberOfFriends > 3) nextDisplay[y][x] = false;
 
     if (nextDisplay[y][x]){
-        //cout << "Cell at " << x << ',' << y << "  NUMBER OF FRIENDS: " << numberOfFriends << " ALIVE LAST? " <<  alive << " ALIVE NEXT? " << nextDisplay[y][x] << endl;
+        cout << "Cell at " << x << ',' << y << "  NUMBER OF FRIENDS: " << numberOfFriends << " ALIVE LAST? " <<  alive << " ALIVE NEXT? " << nextDisplay[y][x] << endl;
     }
     if (alive){
 
     }
-
 }
 
 void generation(){
