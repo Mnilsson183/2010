@@ -3,8 +3,8 @@
 
 using namespace std;
 
-const int HEIGHT = 40;
-const int WIDTH = 100;
+#define HEIGHT = 40;
+#define WIDTH = 100;
 /*
     Display is for the current state of the program 
     NextDisplay is the intermediate state of the program before pushing to display
@@ -21,7 +21,7 @@ void printDisplay(){
     printw("\n");
     for(int i = 0; i < HEIGHT; i++){
         if(i != 0) printw("\n");
-        printw(" |");
+        printw("|");
         for(int j = 0; j < WIDTH; j++){
             if (display[i][j] == false){
                 printw(" ");
