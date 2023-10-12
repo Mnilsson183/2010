@@ -12,6 +12,7 @@ int gen = 0;
     NextDisplay is the intermediate state of the program before pushing to display
 */
 
+
 bool display[HEIGHT][WIDTH];
 bool nextDisplay[HEIGHT][WIDTH];
 
@@ -65,7 +66,7 @@ void checkNext(int y, int x){
         if(display[y + 1][x - 1] == true) numberOfFriends++;
     }
     bool alive = display[y][x];
-    
+
 /*
     Any live cell with fewer than two live neighbors dies as if caused by underpopulation.
     Any live cell with two or three live neighbors lives on to the next generation.
@@ -102,6 +103,19 @@ int main(void){
             display[i][j] = false;
         }
     }
+    mousemask(BUTTON1_CLICKED, NULL);
+    MEVENT event;
+
+    char ch;
+    ch = getch();
+    if(ch == KEY_MOUSE){
+        if(getmouse(&event) == OK){
+            if(event.bstate & BUTTON1_CLICKED){
+                mvprintw(event.y, event.x, "*");
+
+            }
+        }
+    }
     // some small test cases
     display[HEIGHT / 2][WIDTH / 2] = true;
     display[4][4] = true;
@@ -113,8 +127,11 @@ int main(void){
     printDisplay();
     // run the quit logic
     while(true){
-        char c;
-        c = getch();
+        char c = 0; 
+        while(!isalpha(c)){
+            c = getch();
+            printf("%c", c);
+        }
         if (c == 'q'){
             endwin();
             return 0;
