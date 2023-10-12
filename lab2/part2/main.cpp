@@ -14,27 +14,29 @@ bool display[HEIGHT][WIDTH];
 bool nextDisplay[HEIGHT][WIDTH];
 
 void printDisplay(){
+    erase();
     for(int i = 0; i < WIDTH + 1; i++){
-        cout << "_";
+        printw("_");
     }
-    cout << endl;
+    printw("\n");
     for(int i = 0; i < HEIGHT; i++){
-        if(i != 0) cout << endl;
-        cout << " |";
+        if(i != 0) printw("\n");
+        printw(" |");
         for(int j = 0; j < WIDTH; j++){
             if (display[i][j] == false){
-                cout << ' ';
+                printw(" ");
             } else{
-                cout << '*';
+                printw("*");
             }
         }
-        cout << "|";
+        printw("|");
     }
-    cout << endl;
+    printw("\n");
     for(int i = 0; i < WIDTH + 1; i++){
-        cout << "¯";
+        printw("¯");
     }
-    cout << endl;
+    printw("\n");
+    refresh();
 }
 
 void checkNext(int y, int x){
@@ -42,19 +44,19 @@ void checkNext(int y, int x){
     // straight angles
     if (y - 1 >= 0){
         if(display[y - 1][x] == true) numberOfFriends++;
-        cout << "Cell at" << x << ',' << y << "has a friend down one" << endl;
+        //cout << "Cell at" << x << ',' << y << "has a friend down one" << endl;
     }
     if(y + 1 <= HEIGHT - 1){
         if(display[y + 1][x] == true) numberOfFriends++;
-        cout << "Cell at" << x << ',' << y << "has a friend up one" << endl;
+        //cout << "Cell at" << x << ',' << y << "has a friend up one" << endl;
     }
     if(x - 1 >= 0){
         if(display[y][x - 1] == true) numberOfFriends++;
-        cout << "Cell at" << x << ',' << y << "has a friend left one" << endl;
+        //cout << "Cell at" << x << ',' << y << "has a friend left one" << endl;
     }
     if(x + 1 <= WIDTH - 1){
         if(display[y][x + 1] == true) numberOfFriends++;
-        cout << "Cell at" << x << ',' << y << "has a friend right one" << endl;
+        //cout << "Cell at" << x << ',' << y << "has a friend right one" << endl;
     }
 
     // corners
@@ -85,7 +87,7 @@ void checkNext(int y, int x){
     else if((alive == true) && numberOfFriends > 3) nextDisplay[y][x] = false;
 
     if (nextDisplay[y][x]){
-        cout << "Cell at " << x << ',' << y << "  NUMBER OF FRIENDS: " << numberOfFriends << " ALIVE LAST? " <<  alive << " ALIVE NEXT? " << nextDisplay[y][x] << endl;
+        //cout << "Cell at " << x << ',' << y << "  NUMBER OF FRIENDS: " << numberOfFriends << " ALIVE LAST? " <<  alive << " ALIVE NEXT? " << nextDisplay[y][x] << endl;
     }
     if (alive){
 
@@ -109,6 +111,7 @@ void generation(){
 }
 
 int main(void){
+    initscr();
     // the first display to all blanks
     for(int i = 0; i < HEIGHT; i++){
         for(int j = 0; j < WIDTH; j++){
@@ -127,11 +130,13 @@ int main(void){
     // run the quit logic
     while(true){
         char c;
-        cin >> c;
+        c = getch();
         if (c == 'q'){
+            endwin();
             return 0;
         }
         generation();
         printDisplay();
     }
+    endwin();
 }

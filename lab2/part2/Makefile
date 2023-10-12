@@ -1,5 +1,5 @@
 all:
-	g++ main.cpp -o main
+	g++ main.cpp -lncurses -o main
 
 run:
 	./main
