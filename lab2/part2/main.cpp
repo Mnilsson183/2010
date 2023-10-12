@@ -95,6 +95,10 @@ void generation(){
     }
 }
 
+void checkDisplayToPaste(int mouse_x, int mouse_y){
+    
+}
+
 int makeInitLayout(void){
     printw("Please make inital configuration");
 
@@ -105,14 +109,11 @@ int makeInitLayout(void){
     noecho();
     while(true){
         ch = getch();
-        if(ch == KEY_MOUSE){
-            if(getmouse(&event) == OK){
-                if(event.bstate & BUTTON1_CLICKED){
-                    mvprintw(event.y, event.x, "*");
-                    refresh();
-                }
-            }
-        } else if(ch == 'q'){
+
+        checkDisplayToPaste();
+
+        if(ch == 'q'){
+            gen++;
             printDisplay();
             echo();
             return 0;
@@ -134,6 +135,7 @@ int main(void){
     display[5][5] = true;
     display[4][5] = true;
     display[5][4] = true;
+    display[10][10] = true;
 
     // display the first frame of the simulation
     printDisplay();
