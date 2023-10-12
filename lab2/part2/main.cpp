@@ -3,8 +3,8 @@
 
 using namespace std;
 
-const short HEIGHT = 10;
-const short WIDTH = 10;
+const short HEIGHT = 100;
+const short WIDTH = 100;
 /*
     Display is for the current state of the program 
     NextDisplay is the intermediate state of the program before pushing to display
@@ -40,24 +40,12 @@ void printDisplay(){
 }
 
 void checkNext(int y, int x){
-    short numberOfFriends;
+    short numberOfFriends = 0;
     // straight angles
-    if (y - 1 >= 0){
-        if(display[y - 1][x] == true) numberOfFriends++;
-        //cout << "Cell at" << x << ',' << y << "has a friend down one ";
-    }
-    if(y + 1 <= HEIGHT - 1){
-        if(display[y + 1][x] == true) numberOfFriends++;
-        //cout << "Cell at" << x << ',' << y << "has a friend up one ";
-    }
-    if(x - 1 >= 0){
-        if(display[y][x - 1] == true) numberOfFriends++;
-        //cout << "Cell at" << x << ',' << y << "has a friend left one ";
-    }
-    if(x + 1 <= WIDTH - 1){
-        if(display[y][x + 1] == true) numberOfFriends++;
-        //cout << "Cell at" << x << ',' << y << "has a friend right one ";
-    }
+    if (y - 1 >= 0)           if(display[y - 1][x] == true) numberOfFriends++;
+    if(y + 1 <= HEIGHT - 1)   if(display[y + 1][x] == true) numberOfFriends++;
+    if(x - 1 >= 0)            if(display[y][x - 1] == true) numberOfFriends++;
+    if(x + 1 <= WIDTH - 1)    if(display[y][x + 1] == true) numberOfFriends++;
 
     // corners
     if ((y - 1 >=0) && (x - 1 >= 0)){
@@ -85,13 +73,6 @@ void checkNext(int y, int x){
     else if((alive == true) && (numberOfFriends == 2 || numberOfFriends == 3)) nextDisplay[y][x] = true;
     else if((alive == false) && numberOfFriends == 3) nextDisplay[y][x] = true;
     else if((alive == true) && numberOfFriends > 3) nextDisplay[y][x] = false;
-
-    if (nextDisplay[y][x]){
-        cout << "Cell at " << x << ',' << y << "  NUMBER OF FRIENDS: " << numberOfFriends << " ALIVE LAST? " <<  alive << " ALIVE NEXT? " << nextDisplay[y][x] << endl;
-    }
-    if (alive){
-
-    }
 }
 
 void generation(){
@@ -118,7 +99,7 @@ int main(void){
         }
     }
     // some small test cases
-    //display[HEIGHT / 2][WIDTH / 2] = true;
+    display[HEIGHT / 2][WIDTH / 2] = true;
     display[4][4] = true;
     display[5][5] = true;
     display[4][5] = true;
