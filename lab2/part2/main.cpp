@@ -95,25 +95,37 @@ void generation(){
     }
 }
 
+int makeInitLayout(void){
+    printw("Please make inital configuration");
+
+    mousemask(BUTTON1_CLICKED, NULL);
+    MEVENT event;
+
+    char ch;
+    noecho();
+    while(true){
+        ch = getch();
+        if(ch == KEY_MOUSE){
+            if(getmouse(&event) == OK){
+                if(event.bstate & BUTTON1_CLICKED){
+                    mvprintw(event.y, event.x, "*");
+
+                }
+            }
+        } else if(ch == 'q'){
+            printDisplay();
+            echo();
+            return 0;
+        }
+    }
+}
+
 int main(void){
     initscr();
     // the first display to all blanks
     for(int i = 0; i < HEIGHT; i++){
         for(int j = 0; j < WIDTH; j++){
             display[i][j] = false;
-        }
-    }
-    mousemask(BUTTON1_CLICKED, NULL);
-    MEVENT event;
-
-    char ch;
-    ch = getch();
-    if(ch == KEY_MOUSE){
-        if(getmouse(&event) == OK){
-            if(event.bstate & BUTTON1_CLICKED){
-                mvprintw(event.y, event.x, "*");
-
-            }
         }
     }
     // some small test cases
@@ -125,13 +137,11 @@ int main(void){
 
     // display the first frame of the simulation
     printDisplay();
+    makeInitLayout();
+    char c; 
     // run the quit logic
     while(true){
-        char c = 0; 
-        while(!isalpha(c)){
-            c = getch();
-            printf("%c", c);
-        }
+        c = getch();
         if (c == 'q'){
             endwin();
             return 0;
