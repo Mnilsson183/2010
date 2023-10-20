@@ -1,5 +1,5 @@
 all:
-	g++ main.cpp -o main
+	gcc src/main.cpp -o build/main --pedantic -Werror -Wall -Wextra 
 
 run:
-	./main
+	./build/main ./data.dat
