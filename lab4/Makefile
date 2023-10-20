@@ -1,5 +1,5 @@
 all:
-	gcc src/main.cpp -o build/main --pedantic -Werror -Wall -Wextra 
+	gcc src/main.c -o build/main --pedantic -Werror -Wall -Wextra 
 
 run:
 	./build/main ./data.dat

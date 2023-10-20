@@ -4,22 +4,19 @@
 #include <ctype.h>
 
 using namespace std;
-int MAX_WORDS = 100;
+int MAX_WORDS = 1000;
 
 typedef struct DICTION_NODE
 {
-    int hash;
-    string word;
-    int value;
-};
+    string word = NULL;
+    int occurrences = NULL;
+} DICTION_NODE;
 
 typedef struct DICTION{
     DICTION_NODE nodes[MAX_WORDS];
 } DICTION;
 
 
-
-string getNextWord();
 DICTION buildDictionary(string filePath);
 int hash(string name);
 void sortDiction(DICTION &d);
@@ -27,16 +24,23 @@ void printHorzHistogram(const DICTION &d);
 void printVertHistogram(const DICTION &d);
 void printDictionary(const DICTION &d);
 
-string getNextWord(){
-    return "";
-}
-
 DICTION buildDictionary(string filePath){
     FILE infile = fopen(filePath, "r");
     if(!infile){
         printf("File was unable to be opened\n");
         return NULL;
     }
+    DICTION* dictionary = malloc(sizeof(DICTION));
+    while(fscanf(infile, "%s", str) == 1){
+        DICTION_NODE* cursor = dictionary[hash(name)];
+        if(cursor->word == NULL){
+            cursor->word = str;
+            cursor->occurrences = 1;
+        } else{
+            cursor->occurrences++;
+        }
+    }
+    return dictionary;
 }
 
 int hash(string name){
@@ -46,7 +50,7 @@ int hash(string name){
         sum = sum + name[index];
         index++;
     }
-    return sum;
+    return sum % MAX_WORDS;
 }
 
 void sortDiction(DICTION &d){
