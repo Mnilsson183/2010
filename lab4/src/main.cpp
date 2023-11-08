@@ -62,7 +62,23 @@ void printHorzHistogram(const DICTION &d){
         }
     }
 
-    
+    int column = max;
+    while (column > 0){
+        for(auto element : d.section){
+            if(element.second >= column){
+                cout << "* ";
+            } else {
+                cout << "  ";
+            }
+        }
+        cout << endl;
+        column--;
+    }
+    for(unsigned int i = 0; i < d.section.size(); i++){
+        cout << "--";
+    }
+    cout << endl;
+
 }
 
 void printVertHistogram(const DICTION &d){
