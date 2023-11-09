@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include <utility>
+#include <format>
 
 using namespace std;
 
@@ -92,8 +93,12 @@ void printHorzHistogram(const DICTION &d){
         }
     }
 
+
     int column = maxUsage;
     while (column > 0){
+        for(unsigned int i = 0; i < maxStringSize; i++){
+            cout << "  ";
+        }
         for(auto element : d.nodes){
             if(element.second >= column){
                 cout << "* ";
@@ -104,10 +109,23 @@ void printHorzHistogram(const DICTION &d){
         cout << endl;
         column--;
     }
-    for(unsigned int i = 0; i < d.nodes.size(); i++){
+    for(unsigned int i = 0; i < d.nodes.size() + maxStringSize; i++){
         cout << "--";
     }
     cout << endl;
+
+    int increment = 0;
+    for(unsigned int i = 0; i < d.nodes.size(); i++){
+        cout << std::format("{0:5}", d.nodes.at(i).first);
+
+        for(unsigned int i = 0; i < maxStringSize - 1 + increment; i++){
+            cout << "--";
+        }
+        cout << '/';
+        
+        cout << endl;
+        increment++;
+    }
 
 }
 
