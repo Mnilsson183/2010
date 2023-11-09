@@ -5,7 +5,6 @@
 #include <map>
 #include <vector>
 #include <utility>
-#include <format>
 
 using namespace std;
 
@@ -50,7 +49,6 @@ DICTION buildDictionary(){
 
     while(cin.good()){
         ch = cin.get();
-        cout << "char: "<< int(ch) << endl;
         if(isalpha(ch)){
             if(isupper(ch)){
                 s.push_back(tolower(ch));
@@ -59,7 +57,6 @@ DICTION buildDictionary(){
             }
         } else{
             if(s.compare("") != 0){
-                cout << "end of string" << endl;
                 addToDiction(s);
                 s.clear();
             }
@@ -116,7 +113,8 @@ void printHorzHistogram(const DICTION &d){
 
     int increment = 0;
     for(unsigned int i = 0; i < d.nodes.size(); i++){
-        cout << std::format("{0:5}", d.nodes.at(i).first);
+        //cout << std::format("{0:5}", d.nodes.at(i).first);
+        cout << d.nodes.at(i).first;
 
         for(unsigned int i = 0; i < maxStringSize - 1 + increment; i++){
             cout << "--";
