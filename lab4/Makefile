@@ -1,5 +1,5 @@
 all:
-	g++ src/main.cpp -o build/main --pedantic -Werror -Wall -Wextra 
+	g++ src/main.cpp -g -o build/main --pedantic -Wall -Wextra #-Werror
 
 run:
 	./build/main < data.dat

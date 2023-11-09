@@ -10,7 +10,7 @@ using namespace std;
 
 
 typedef struct DICTION{
-    vector<pair<string, int>> nodes;
+    vector< pair <string, int> > nodes;
 } DICTION;
 
 DICTION d;
@@ -25,40 +25,48 @@ void printDictionary(const DICTION &d);
 
 void addToDiction(string s){
 
+    cout << s << endl;
+
     if(d.nodes.size() == 0){
-        d.nodes.push_back(make_pair(s, 0));
+        d.nodes.push_back(make_pair(s, 1));
         return;
     }
 
     for(unsigned int i = 0; i < d.nodes.size(); i++){
-        if(d.nodes.at(i).first.compare(s) == 0){
+        if(s.compare(d.nodes.at(i).first) == 0){
             d.nodes.at(i).second++;
-        } else{
-            d.nodes.push_back(make_pair(s, 0));
+            return;
         }
     }
+    d.nodes.push_back(make_pair(s, 1));
+    
 }
 
 DICTION buildDictionary(){
     
-
     string s;
     char ch;
 
     while(cin.good()){
         ch = cin.get();
+        cout << "char: "<< int(ch) << endl;
         if(isalpha(ch)){
             if(isupper(ch)){
                 s.push_back(tolower(ch));
-            } else{
+            } else if(islower(ch)){
                 s.push_back(ch);
             }
         } else{
-            addToDiction(s);
-            s.clear();
+            if(s.compare("") != 0){
+                cout << "end of string" << endl;
+                addToDiction(s);
+                s.clear();
+            }
         }
     }
-    addToDiction(s);
+    if(s.compare("") != 0){
+        addToDiction(s);
+    }
 
     return d;
 }
@@ -122,8 +130,8 @@ void printDictionary(const DICTION &d){
     cout << "Dictionary" << endl << endl;
     cout << "Word" << "  " << "Frequency" << endl;
     cout << "-------------------------" << endl;
-    for(auto element :d.nodes){
-        cout << element.first << "    " << element.second << endl;
+    for(unsigned int i = 0; i < d.nodes.size(); i++){
+        cout << d.nodes.at(i).first << "   " << d.nodes.at(i).second << endl;
     }
     cout << endl;
 }
