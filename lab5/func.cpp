@@ -6,8 +6,8 @@
 int parse(string command){
     int i = 0;
     // parse for leading spaces
-    for(; i < s.length(); i++){
-        if(i.at(i) == 'c'){
+    for(; i < command.size(); i++){
+        if(command.at(i) == 'c'){
             
         }
     }
