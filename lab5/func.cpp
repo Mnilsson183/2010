@@ -3,12 +3,14 @@
 #include <string>
 #include <func.h>
 
-int parse(string command){
-    int i = 0;
+int buildDB(string filepath){
+
+}
+
+int parseCommand(String command){
+    int offset = 0;
     // parse for leading spaces
-    for(; i < command.size(); i++){
-        if(command.at(i) == 'c'){
-            
-        }
+    for(;offset < command.size(); offset++){
+        if(command)
     }
 }
