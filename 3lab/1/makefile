@@ -1,5 +1,5 @@
 CC=g++
-SRC_FILES = main.cpp
+SRC_FILES = main.cpp data.cpp
 FLAGS = -Wall -Wextra -Werror -g
 OBJ_FILES = $(SRC_FILES:.cpp=.o)
 EXEC = a.out
@@ -10,7 +10,7 @@ all:
 	@echo 'removing all object files ...'
 	rm ${OBJ_FILES}
 	@echo 'builing to ${EXEC}'
-run:
+run: all
 	./a.out
 clean:
 	rm ${EXEC} ${OBJ_FILES}
