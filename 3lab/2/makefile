@@ -10,7 +10,7 @@ all:
 	@echo 'removing all object files ...'
 	rm ${OBJ_FILES}
 	@echo 'builing to ${EXEC}'
-run:
+run: all
 	./a.out
 clean:
 	rm ${EXEC} ${OBJ_FILES}
