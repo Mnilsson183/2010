@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <time.h>
 
+#define DICE_LENGTH 2
 using namespace std;
 
 
@@ -9,16 +10,14 @@ int credits = 100;
 int die1;
 int die2;
 
-
-int die(){
+int die() {
     return rand() % 6 + 1;
 }
 
 int gameThrow(void){
     // ret 1 if player and 2 if house
-    const int DICELENGTH = 2;
-    int* dice = new int[DICELENGTH];
-    for (int i = 0; i < DICELENGTH; i++){
+    int* dice = new int[DICE_LENGTH];
+    for (int i = 0; i < DICE_LENGTH; i++){
         dice[i] = die();
     }
 
@@ -33,7 +32,7 @@ int gameThrow(void){
         int roll = sum;
         cout << "The point is set at " << roll << endl;
         while (true){
-            for (int i = 0; i < DICELENGTH; i++){
+            for (int i = 0; i < DICE_LENGTH; i++){
                 dice[i] = die();
             }
             die1 = dice[0];
@@ -53,7 +52,8 @@ void playGame(void){
     int wager;
     cout << "You have " << credits << " credits. How much do you wager? ";
     cin >> wager;
-    while (wager < 0 || wager > credits || !isdigit(wager)){
+    while (wager < 0 || wager > credits){
+        cout << "Please enter a value in range (0, " << credits << "] :";
         cin >> wager;
     }
     int winner = gameThrow();
