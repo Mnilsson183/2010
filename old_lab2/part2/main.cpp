@@ -12,7 +12,6 @@ int gen = 0;
     NextDisplay is the intermediate state of the program before pushing to display
 */
 
-
 bool display[HEIGHT][WIDTH];
 bool nextDisplay[HEIGHT][WIDTH];
 

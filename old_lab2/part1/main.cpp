@@ -65,6 +65,7 @@ void playGame(void){
         cout << "Player Loses" << endl << endl;
         cout << "You have lost " << wager << " credits. Your new balance is now " << credits << " credits" << endl;
     }
+    if (credits == 0) exit(0);
 
 }
 
