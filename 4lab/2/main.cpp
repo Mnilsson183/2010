@@ -91,8 +91,7 @@ void populate(int y, int x, bool *alive, bool display[HEIGHT][WIDTH]) {
 			*alive = false;
 		else
 			*alive = true; // I dont need this line but nice to read
-	}
-	else {
+	} else {
 		if (numberOfFriends == 3)
 			*alive = true;
 	}
@@ -165,8 +164,7 @@ int main(void) {
 		if (getch() == 'q') {
 			endwin();
 			return 0;
-		}
-		else {
+		} else {
 			generation(*curr, *next);
 			gen++;
 			curr = next;
