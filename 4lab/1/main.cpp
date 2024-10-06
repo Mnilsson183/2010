@@ -41,7 +41,7 @@ void playGame(int *credits) {
 	std::cout << "You have " << *credits << " credits. How much do you wager? ";
 	std::cin >> wager;
 
-	while (wager < 0 || wager > *credits) {
+	while (wager <= 0 || wager > *credits) {
 		std::cout << "Please enter a value in range (0, " << *credits << "] :";
 		std::cin >> wager;
 	}
@@ -57,18 +57,18 @@ void playGame(int *credits) {
 				  << std::endl;
 		std::cout << "You have lost " << wager << " credits. Your new balance is now " << *credits << " credits" << std::endl;
 	}
+	if (*credits == 0) {
+		std::cout << "You are out of credits\n";
+		exit(0);
+	}
 }
 
 int main() {
+	int credits = DEFAULT_CREDITS;		// I dont like global vars
 	char ans;
 	bool done = false;
-	int credits = DEFAULT_CREDITS;
 	while (!done) {
 		playGame(&credits); // YOU MUST WRITE THIS FUNCTION
-		if (credits == 0) {
-			std::cout << "your a broke boy\n";
-			return 0;
-		}
 		std::cout << " Play again (y/n) ? ";
 		std::cin >> ans;
 		if (ans == 'n' || ans == 'N')
