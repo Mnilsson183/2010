@@ -15,7 +15,7 @@ int gameThrow(void) {
 	// first roll
 	int sum = die1 + die2;
 	std::cout << std::endl
-			  << "player rolled " << die1 << " + " << die2 << " = " << sum << std::endl;
+			  << "Player rolled " << die1 << " + " << die2 << " = " << sum << std::endl;
 	if (sum == 7 || sum == 11) return 1;
 	else if (sum == 2 || sum == 3 || sum == 12) return -1;
 	else {
@@ -36,13 +36,15 @@ int gameThrow(void) {
 	}
 }
 
-void playGame(int *credits) {
+void playGame(int* credits) {
 	int wager;
 	std::cout << "You have " << *credits << " credits. How much do you wager? ";
 	std::cin >> wager;
 
-	while (wager <= 0 || wager > *credits) {
-		std::cout << "Please enter a value in range (0, " << *credits << "] :";
+	while (wager <= 0 || wager > *credits || !std::cin.good()) {
+		std::cin.clear();
+		std::cin.ignore();
+		std::cout << "Please enter a number in range (0, " << *credits << "] : ";
 		std::cin >> wager;
 	}
 	int winner = gameThrow();
@@ -64,7 +66,7 @@ void playGame(int *credits) {
 }
 
 int main() {
-	int credits = DEFAULT_CREDITS;		// I dont like global vars
+	int credits = DEFAULT_CREDITS;
 	char ans;
 	bool done = false;
 	while (!done) {

@@ -20,8 +20,6 @@ int count(bool display[HEIGHT][WIDTH]) {
 
 void printDisplay(bool display[HEIGHT][WIDTH], int gen) {
 	clear();
-	mvprintw(0, 0, "Generation: %d", gen);
-	mvprintw(1, 0, "n: %d", count(display));
 	for (int h = 0; h < HEIGHT; h++) {
 		for (int w = 0; w < WIDTH; w++) {
 			if (display[h][w]) {
@@ -33,6 +31,8 @@ void printDisplay(bool display[HEIGHT][WIDTH], int gen) {
 	for (int i = 0; i < WIDTH; i++) {
 		mvprintw(HEIGHT, i, "#");
 	}
+	mvprintw(0, 0, "Generation: %d", gen);
+	mvprintw(1, 0, "n: %d", count(display));
 	refresh();
 }
 
@@ -64,7 +64,7 @@ void populate(int y, int x, bool *alive, bool display[HEIGHT][WIDTH]) {
 	}
 	if ((y + 1 <= HEIGHT - 1) && (x + 1 <= WIDTH - 1)) {
 		if (display[y + 1][x + 1] == true)
-			++numberOfFriends;
+			numberOfFriends++;
 	}
 	if ((y - 1 >= 0) && (x + 1 <= WIDTH - 1)) {
 		if (display[y - 1][x + 1] == true)
