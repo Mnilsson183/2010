@@ -73,6 +73,7 @@ int playGame(unsigned int* credits) {
 }
 
 int main() {
+	srand(time(NULL));
 	unsigned int credits = DEFAULT_CREDITS;
 	char ans;
 	bool done = false;
