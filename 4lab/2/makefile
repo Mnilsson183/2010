@@ -1,5 +1,5 @@
 CC=g++
-SRC_FILES = main.cpp
+SRC_FILES = main.cpp func.cpp
 FLAGS = -Wall -Wextra -Werror -g -std=c++11
 LINKER = -lcurses
 OBJ_FILES = $(SRC_FILES:.cpp=.o)
