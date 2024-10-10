@@ -1,6 +1,7 @@
-#include <iostream>
-#include <cstdlib>
+// Copyright 2024 Morgan Nilsson
 #include <time.h>
+#include <cstdlib>
+#include <iostream>
 
 #define DEFAULT_CREDITS 100
 
@@ -9,23 +10,25 @@ int die(void) {
 }
 
 int gameThrow(void) {
-	int die1 = die();
+    int die1 = die();
 	int die2 = die();
 
-	// first roll
 	int sum = die1 + die2;
 	std::cout << std::endl
 			  << "Player rolled " << die1 << " + " << die2 << " = " << sum << std::endl;
-	if (sum == 7 || sum == 11) return 1;
-	else if (sum == 2 || sum == 3 || sum == 12) return -1;
-	else {
+	if (sum == 7 || sum == 11) {
+		return 1;
+	} else if (sum == 2 || sum == 3 || sum == 12) {
+		return -1;
+	} else {
 		int roll = sum;
 		std::cout << "The point is set at " << roll << std::endl;
 		while (true) {
 			int die1 = die();
 			int die2 = die();
 			sum = die1 + die2;
-			std::cout << "player rolled " << die1 << " + " << die2 << " = " << sum << std::endl;
+			std::cout << "player rolled " << die1
+				<< " + " << die2 << " = " << sum << std::endl;
 			if (sum == 7) {
 				return -1;
 			}
@@ -36,8 +39,8 @@ int gameThrow(void) {
 	}
 }
 
-void playGame(int* credits) {
-	int wager;
+int playGame(unsigned int* credits) {
+	unsigned int wager;
 	std::cout << "You have " << *credits << " credits. How much do you wager? ";
 	std::cin >> wager;
 
@@ -52,25 +55,28 @@ void playGame(int* credits) {
 	if (winner == 1) {
 		std::cout << "Player Wins" << std::endl
 				  << std::endl;
-		std::cout << "You have won " << wager << " credits. Your new balance is now " << *credits << " credits" << std::endl;
-	}
-	else {
+		std::cout << "You have won " << wager
+			<< " credits. Your new balance is now " << *credits
+			<< " credits" << std::endl;
+	} else {
 		std::cout << "Player Loses" << std::endl
 				  << std::endl;
-		std::cout << "You have lost " << wager << " credits. Your new balance is now " << *credits << " credits" << std::endl;
+		std::cout << "You have lost " << wager <<
+			" credits. Your new balance is now " << *credits << " credits" << std::endl;
 	}
+
 	if (*credits == 0) {
 		std::cout << "You are out of credits\n";
-		exit(0);
+		return 0;
 	}
+	return 1;
 }
 
 int main() {
-	int credits = DEFAULT_CREDITS;
+	unsigned int credits = DEFAULT_CREDITS;
 	char ans;
 	bool done = false;
-	while (!done) {
-		playGame(&credits); // YOU MUST WRITE THIS FUNCTION
+	while (!done && playGame(&credits)) {
 		std::cout << " Play again (y/n) ? ";
 		std::cin >> ans;
 		if (ans == 'n' || ans == 'N')

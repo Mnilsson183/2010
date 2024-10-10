@@ -1,24 +1,24 @@
+// Copyright 2024 Morgan Nilsson
 #include <ncurses.h>
+#include <stdlib.h>
+#include <vector>
 
 #define HEIGHT 40
 #define WIDTH 90
 
-/*
-	Display is for the current state of the program
-	NextDisplay is the intermediate state of the program before pushing to display
-*/
+typedef std::vector<std::vector<bool>> Mat;
 
-int count(bool display[HEIGHT][WIDTH]) {
+int count(const Mat& display) {
 	int count = 0;
 	for (int i = 0; i < HEIGHT; i++) {
 		for (int j = 0; j < WIDTH; j++) {
-			if (display[i][j] == true) count++;
+			if (display[i][j]) count++;
 		}
 	}
 	return count;
 }
 
-void printDisplay(bool display[HEIGHT][WIDTH], int gen) {
+void printDisplay(const Mat& display, int gen) {
 	clear();
 	for (int h = 0; h < HEIGHT; h++) {
 		for (int w = 0; w < WIDTH; w++) {
@@ -28,7 +28,8 @@ void printDisplay(bool display[HEIGHT][WIDTH], int gen) {
 		}
 		mvprintw(h, WIDTH, "#");
 	}
-	for (int i = 0; i < WIDTH; i++) {
+	if (WIDTH > 11) mvprintw(HEIGHT, 0, "c is better");
+	for (int i = 0; i < WIDTH + 1; i++) {
 		mvprintw(HEIGHT, i, "#");
 	}
 	mvprintw(0, 0, "Generation: %d", gen);
@@ -36,46 +37,34 @@ void printDisplay(bool display[HEIGHT][WIDTH], int gen) {
 	refresh();
 }
 
-void populate(int y, int x, bool *alive, bool display[HEIGHT][WIDTH]) {
-	short numberOfFriends = 0;
+void populate(int y, int x, Mat& next, const Mat& display) {
+	u_int16_t numberOfFriends = 0;
 
-	// straights
 	if (y - 1 >= 0) {
-		if (display[y - 1][x] == true)
-			numberOfFriends++;
+		if (display[y - 1][x]) numberOfFriends++;
 	}
 	if (y + 1 <= HEIGHT - 1) {
-		if (display[y + 1][x] == true)
-			numberOfFriends++;
+		if (display[y + 1][x]) numberOfFriends++;
 	}
 	if (x - 1 >= 0) {
-		if (display[y][x - 1] == true)
-			numberOfFriends++;
+		if (display[y][x - 1]) numberOfFriends++;
 	}
 	if (x + 1 <= WIDTH - 1) {
-		if (display[y][x + 1] == true)
-			numberOfFriends++;
+		if (display[y][x + 1]) numberOfFriends++;
 	}
 
-	// corners
 	if ((y - 1 >= 0) && (x - 1 >= 0)) {
-		if (display[y - 1][x - 1] == true)
-			numberOfFriends++;
+		if (display[y - 1][x - 1]) numberOfFriends++;
 	}
 	if ((y + 1 <= HEIGHT - 1) && (x + 1 <= WIDTH - 1)) {
-		if (display[y + 1][x + 1] == true)
-			numberOfFriends++;
+		if (display[y + 1][x + 1]) numberOfFriends++;
 	}
 	if ((y - 1 >= 0) && (x + 1 <= WIDTH - 1)) {
-		if (display[y - 1][x + 1] == true)
-			numberOfFriends++;
+		if (display[y - 1][x + 1]) numberOfFriends++;
 	}
 	if ((y + 1 <= HEIGHT - 1) && (x - 1 >= 0)) {
-		if (display[y + 1][x - 1] == true)
-			numberOfFriends++;
+		if (display[y + 1][x - 1]) numberOfFriends++;
 	}
-
-	*alive = display[y][x];
 
 	/*
 		Any live cell with fewer than two live neighbors dies as if caused by underpopulation.
@@ -84,28 +73,30 @@ void populate(int y, int x, bool *alive, bool display[HEIGHT][WIDTH]) {
 		Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
 	*/
 
-	if (*alive) {
+	next[y][x] = display[y][x];
+
+	if (next[y][x]) {
 		if (numberOfFriends < 2)
-			*alive = false;
+			next[y][x] = false;
 		else if (numberOfFriends > 3)
-			*alive = false;
+			next[y][x] = false;
 		else
-			*alive = true; // I dont need this line but nice to read
+			next[y][x] = true;
 	} else {
 		if (numberOfFriends == 3)
-			*alive = true;
+			next[y][x] = true;
 	}
 }
 
-void generation(bool last[HEIGHT][WIDTH], bool next[HEIGHT][WIDTH]) {
+void generation(const Mat& last, Mat& next) {
 	for (int i = 0; i < HEIGHT; i++) {
 		for (int j = 0; j < WIDTH; j++) {
-			populate(i, j, &next[i][j], last);
+			populate(i, j, next, last);
 		}
 	}
 }
 
-int main(void) {
+void populate(Mat& mat) {
 	MEVENT event;
 
 	initscr();
@@ -116,59 +107,55 @@ int main(void) {
 	mouseinterval(3);
 	mousemask(ALL_MOUSE_EVENTS, NULL);
 
-	// what is the heap
-	bool buf1[HEIGHT][WIDTH];
-	bool buf2[HEIGHT][WIDTH];
-	auto curr = &buf1;
-	auto next = &buf2;
-	for (int i = 0; i < HEIGHT; i++) {
-		for (int j = 0; j < WIDTH; j++) {
-			buf1[i][j] = false;
-		}
-	}
+	printDisplay(mat, 0);
+	mvprintw(2, 0, "Please Populate screen press 'q' to exit");
 
-	for (int h = 0; h < HEIGHT; h++) {
-		mvprintw(h, WIDTH, "#");
-	}
-
-	for (int i = 0; i < WIDTH; i++) {
-		mvprintw(HEIGHT, i, "#");
-	}
-
+	int count = 0;
 	while (1) {
 		int c = getch();
 		if (c == KEY_MOUSE) {
 			if (getmouse(&event) == OK) {
 				if (event.bstate & BUTTON1_PRESSED) {
-					if (event.y < HEIGHT - 1 && event.x < WIDTH - 1 && event.y >= 0 && event.x >= 0) {
-						if (buf1[event.y][event.x] == false) {
-							buf1[event.y][event.x] = true;
+					if (event.y < HEIGHT - 1 && event.x < WIDTH - 1
+					&& event.y >= 0 && event.x >= 0) {
+						if (mat[event.y][event.x] == false) {
+							mat[event.y][event.x] = true;
 							mvprintw(event.y, event.x, "*");
+							count++;
 						} else {
-							buf1[event.y][event.x] = false;
+							mat[event.y][event.x] = false;
 							mvprintw(event.y, event.x, " ");
+							count--;
 						}
+						mvprintw(1, 0, "n: %d", count);
+						mvprintw(2, 0, "Please Populate screen");
 						refresh();
 					}
 				}
 			}
 		}
-		if (c == 'q')
-			break;
+		if (c == 'q') break;
 	}
-	int gen = 0;
+}
 
-	// display the first frame of the simulation
-	printDisplay(buf1, gen);
+int main(void) {
+	Mat vec1(HEIGHT, std::vector<bool>(WIDTH, false));
+	Mat vec2(HEIGHT, std::vector<bool>(WIDTH, false));
+	Mat &front = vec1;
+	Mat &back = vec2;
+
+	populate(front);
+
+	int gen = 0;
+	printDisplay(vec1, 0);
 	while (true) {
 		if (getch() == 'q') {
 			endwin();
 			return 0;
 		} else {
-			generation(*curr, *next);
-			gen++;
-			curr = next;
-			printDisplay(*curr, gen);
+			generation(front, back);
+			front = back;
+			printDisplay(front, ++gen);
 		}
 	}
 }

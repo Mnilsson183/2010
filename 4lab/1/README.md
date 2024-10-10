@@ -4,3 +4,5 @@ To run the file
 ```./a.out```
 or
 ```make run```
+
+This is a craps game where the user 
