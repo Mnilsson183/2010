@@ -25,3 +25,6 @@ check:
 
 clean:
 	rm ${EXEC} ${OBJ_FILES}
+
+valgrind: all
+	valgrind ${EXEC}

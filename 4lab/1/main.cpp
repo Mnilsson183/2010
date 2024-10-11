@@ -47,7 +47,7 @@ int playGame(unsigned int* credits) {
 	while (wager <= 0 || wager > *credits || !std::cin.good()) {
 		std::cin.clear();
 		std::cin.ignore();
-		std::cout << "Please enter a number in range (0, " << *credits << "] : ";
+		std::cout << "\nPlease enter a number in range (0, " << *credits << "] : ";
 		std::cin >> wager;
 	}
 	int winner = gameThrow();

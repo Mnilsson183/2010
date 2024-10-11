@@ -5,4 +5,8 @@ To run the file
 or
 ```make run```
 
-This is a craps game where the user 
+To use cppcheck and cpplint run
+```make check```
+
+To run valgrind
+```make valgrind```

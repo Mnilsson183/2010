@@ -17,7 +17,7 @@ full: check all
 	@echo 'Full build'
 
 run: all
-	./a.out
+	./${EXEC}
 
 check:
 	cppcheck ${CPP_CHECK_FLAGS} ${SRC_FILES}
@@ -25,3 +25,6 @@ check:
 
 clean:
 	rm ${EXEC} ${OBJ_FILES}
+
+valgrind: all
+	valgrind ${EXEC}

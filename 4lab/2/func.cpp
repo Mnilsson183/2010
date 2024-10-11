@@ -17,12 +17,12 @@ void printDisplay(const Mat& display, int gen) {
 	for (int h = 0; h < HEIGHT; h++) {
 		for (int w = 0; w < WIDTH; w++) {
 			if (display[h][w]) {
-				mvprintw(h, w, "*");
+				mvprintw(h, w, LIVE);
 			}
 		}
 		mvprintw(h, WIDTH, "#");
 	}
-	if (WIDTH > 11) mvprintw(HEIGHT, 0, "c is better");
+	if (WIDTH > 11) mvprintw(HEIGHT, 0, "C is better");
 	for (int i = 0; i < WIDTH + 1; i++) {
 		mvprintw(HEIGHT, i, "#");
 	}
@@ -114,7 +114,7 @@ void init_board(Mat& mat) {
 					&& event.y >= 0 && event.x >= 0) {
 						if (mat[event.y][event.x] == false) {
 							mat[event.y][event.x] = true;
-							mvprintw(event.y, event.x, "*");
+							mvprintw(event.y, event.x, LIVE);
 							count++;
 						} else {
 							mat[event.y][event.x] = false;

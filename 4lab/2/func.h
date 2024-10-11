@@ -5,8 +5,9 @@
 #ifndef FUNC_H
 #define FUNC_H
 
-#define HEIGHT 40
-#define WIDTH 90
+#define HEIGHT 24
+#define WIDTH 80
+#define LIVE "X"
 typedef std::vector<std::vector<bool>> Mat;
 
 void generation(const Mat& last, Mat& next);
