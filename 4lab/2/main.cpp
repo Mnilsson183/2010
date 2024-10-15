@@ -15,7 +15,7 @@ int main(void) {
 
 	int gen = 0;
 	printDisplay(front, 0);
-		time_t last = time(NULL);
+	time_t last = time(NULL);
 	while(gen <= maxgen) {
 		while(difftime(time(NULL), last)) {
 			generation(front, back);

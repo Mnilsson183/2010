@@ -1,7 +1,6 @@
 // Copyright 2024 Morgan Nilsson
 #include "./func.h"
 
-
 int count(const Mat& display) {
 	int count = 0;
 	for (int i = 0; i < HEIGHT; i++) {
