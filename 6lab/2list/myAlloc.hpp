@@ -12,7 +12,7 @@
 #define MIN_SIZE 50
 #define MAX_SIZE 350
 #define TIME_LIMIT 1000
-#define REQUEST_INTERVAL 10
+#define REQUEST_INTERVAL 100
 #define MEMORY_SIZE 1000
 
 #define DEBUG 0
