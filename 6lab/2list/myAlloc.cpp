@@ -173,6 +173,7 @@ void cleanExpired(size_t tick) {
 }
 
 void myAllocClean() {
+	condenseFreeList();
 	printf("Total requests %d\nTotal satisfied: %d (%lf%%)\nTotal unsatisfied: %d (%lf%%)\n", 
 		myAlloc->number_of_requests, myAlloc->requests_satisfied, 100.0 * myAlloc->requests_satisfied / myAlloc->number_of_requests, myAlloc->requests_unsatisfied, 100.0 * myAlloc->requests_unsatisfied / myAlloc->number_of_requests);
 	printf("Smallest size request %lu\nLargest size request %lu\nAverage size of request: %Lf\n", 
