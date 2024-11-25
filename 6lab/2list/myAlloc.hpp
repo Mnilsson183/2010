@@ -11,7 +11,7 @@
 #define MAX_LEASE 70
 #define MIN_SIZE 50
 #define MAX_SIZE 350
-#define TIME_LIMIT 100 //1000
+#define TIME_LIMIT 100
 #define REQUEST_INTERVAL 10
 #define MEMORY_SIZE 1000
 
@@ -36,6 +36,8 @@ struct Allocator {
 	size_t shortest_exp_requested;
 	size_t longest_exp_requested;
 	size_t total_exp_requested;
+
+	size_t number_of_merges;
 };
 
 void getMem(size_t size, size_t exp);
