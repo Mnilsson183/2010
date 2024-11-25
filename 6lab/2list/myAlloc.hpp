@@ -21,7 +21,7 @@ typedef std::pair<int , int> range;
 typedef std::pair<range, int> allocation_ticket;
 
 struct Allocator {
-	std::vector<allocation_ticket> free;
+	std::vector<range> free;
 	std::vector<allocation_ticket> allocated;
 	size_t maxAdder;
 

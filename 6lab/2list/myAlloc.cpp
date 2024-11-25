@@ -17,9 +17,13 @@ allocation_ticket make_allocation_ticket(size_t low, size_t high, int exp) {
 	return allocation_ticket{{low, high}, exp};
 }
 
+range make_range(int low, int high) {
+	return range{low, high};
+}
+
 struct Allocator* initAllocator(int maxAdder) {
 	struct Allocator* myAlloc = (struct Allocator*)malloc(sizeof(struct Allocator));
-	myAlloc->free.push_back(make_allocation_ticket(0, MEMORY_SIZE, -1));
+	myAlloc->free.push_back(make_range(0, MEMORY_SIZE));
 	myAlloc->maxAdder = maxAdder;
 
 	myAlloc->number_of_requests = 0;
@@ -57,8 +61,7 @@ void printfAllocationTickets() {
 
 void printFreeSpace() {
 	for (size_t i = 0; i < myAlloc->free.size(); i++) {
-		printf("Free ");
-		printAllocationTicket(&myAlloc->free[i]);
+		printf("Free space [%d, %d]\n", myAlloc->free[i].first, myAlloc->free[i].second);
 	}
 
 }
@@ -67,14 +70,14 @@ void printFreeSpace() {
 // basic first fit
 int find_optimal_mem_loc(int size) {
 	if (myAlloc->allocated.size() == 0) {
-		myAlloc->free[0].first.first += size + 1;
+		myAlloc->free[0].first += size + 1;
 		return 0;
 	}
 	for (size_t i = 0; i < myAlloc->free.size(); i++) {
-		allocation_ticket space = myAlloc->free[i];
-		if (space.first.second - space.first.first >= size) {
-			int val = space.first.first;
-			myAlloc->free[i].first.first += size + 1;
+		range space = myAlloc->free[i];
+		if (space.second - space.first >= size) {
+			int val = space.first;
+			myAlloc->free[i].first += size + 1;
 			return val;
 		}
 	}
@@ -132,15 +135,15 @@ void getMem(size_t size, size_t exp) {
 	return;
 }
 
-bool cmp (allocation_ticket a1, allocation_ticket a2) {
-	return a1.first.first < a2.first.first;
+bool cmp (range a1, range a2) {
+	return a1.first < a2.first;
 }
 
 void condenseFreeList() {
 	std::sort(myAlloc->free.begin(), myAlloc->free.end(), &cmp);
 	for (size_t i = 0; i < myAlloc->free.size()-1; i++) {
-		if (myAlloc->free[i].first.second == myAlloc->free[i+1].first.first - 1) {
-			myAlloc->free[i].first.second = myAlloc->free[i+1].first.second;
+		if (myAlloc->free[i].second == myAlloc->free[i+1].first - 1) {
+			myAlloc->free[i].second = myAlloc->free[i+1].second;
 			myAlloc->free.erase(myAlloc->free.begin()+i+1);
 		}
 	}
@@ -154,7 +157,7 @@ void cleanExpired(size_t tick) {
 			printf("TICK: %lu | Removing ticket #%lu with exp %lu\n", tick, i, expires);
 			#endif
 			allocation_ticket expTicket = myAlloc->allocated[i];
-			myAlloc->free.push_back(make_allocation_ticket(expTicket.first.first, expTicket.first.second, -1));
+			myAlloc->free.push_back(make_range(expTicket.first.first, expTicket.first.second));
 			myAlloc->allocated.erase(myAlloc->allocated.begin() + i);
 			i--;
 		}
