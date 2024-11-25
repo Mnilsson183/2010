@@ -1,5 +1,5 @@
 CC=g++
-SRC_FILES = main.cpp myAlloc.cpp list.cpp
+SRC_FILES = main.cpp myAlloc.cpp
 FLAGS = -Wall -Wextra -Werror -g -std=c++11
 LINKER = -lcurses
 OBJ_FILES = $(SRC_FILES:.cpp=.o)

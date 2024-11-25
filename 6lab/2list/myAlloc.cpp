@@ -1,4 +1,6 @@
 // Copyright 2024 Morgan Nilsson
+#include <_strings.h>
+#include <algorithm>
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
@@ -6,20 +8,18 @@
 #include <stdio.h>
 #include "myAlloc.hpp"
 
-extern size_t clock;
+extern size_t clock_tick;
 
 void getMem(size_t size, int exp);
 void cleanExpired(int tick);
 
-bool cmp(void* e1, void* e2) {
-	int ev1 = ((allocation_ticket*)e1)->first.first;
-	int ev2 = ((allocation_ticket*)e2)->first.first;
-	return ev1 < ev2;
+allocation_ticket make_allocation_ticket(size_t low, size_t high, int exp) {
+	return allocation_ticket{{low, high}, exp};
 }
 
 struct Allocator* initAllocator(int maxAdder) {
 	struct Allocator* myAlloc = (struct Allocator*)malloc(sizeof(struct Allocator));
-	myAlloc->allocs = initSortedLinkedList(&cmp);
+	myAlloc->free.push_back(make_allocation_ticket(0, MEMORY_SIZE, -1));
 	myAlloc->maxAdder = maxAdder;
 
 	myAlloc->number_of_requests = 0;
@@ -40,53 +40,55 @@ struct Allocator* initAllocator(int maxAdder) {
 struct Allocator* myAlloc = initAllocator(DEFAULT_MAX_ADDRESS);
 
 allocation_ticket* getAllocationTicket(size_t index) {
-	return (allocation_ticket*)(myAlloc->allocs->get(myAlloc->allocs, index));
+	return &myAlloc->allocated.at(index);
 }
 
 void printAllocationTicket(void* rawTicket) {
+	if (myAlloc->allocated.size() == 0) return;
 	allocation_ticket* ticket = (allocation_ticket*) rawTicket;
-	printf("Allocation: range [%lu, %lu] with expire %lu\n", ticket->first.first, ticket->first.second, ticket->second);
+	printf("Allocation: range [%d, %d] with expire %d\n", ticket->first.first, ticket->first.second, ticket->second);
 }
 
 void printfAllocationTickets() {
-	printSortedLinkedList(myAlloc->allocs, &printAllocationTicket);
+	for (size_t i = 0; i < myAlloc->allocated.size(); i++) {
+		printAllocationTicket(getAllocationTicket(i));
+	}
 }
 
 void printFreeSpace() {
-	allocation_ticket* t1 = getAllocationTicket(0);
-	allocation_ticket* t2 = NULL;
-	if (t1->first.first != 0) printf("Free space [0, %lu] : %lu\n", t1->first.first-1, t1->first.first);
-	for (size_t i = 1; i < myAlloc->allocs->size; i++) {
-		t1 = getAllocationTicket(i-1);
-		t2 = getAllocationTicket(i);
-		if ((t1->first.second+1) - (t2->first.first) != 0) printf("Free space [%lu, %lu] : %lu\n", t1->first.second+1, t2->first.first-1, (t2->first.first - t1->first.second - 1));
+	for (size_t i = 0; i < myAlloc->free.size(); i++) {
+		printf("Free ");
+		printAllocationTicket(&myAlloc->free[i]);
 	}
-	t1 = getAllocationTicket(myAlloc->allocs->size-1);
-	if (t1->first.second - MEMORY_SIZE != 0) printf("Free space [%lu, %d] : %lu\n", t1->first.second+1, MEMORY_SIZE, MEMORY_SIZE - t1->first.second - 1);
-}
 
-allocation_ticket* make_allocation_ticket(size_t low, size_t high, size_t exp) {
-	return new allocation_ticket{{low, high}, exp};
 }
 
 // returns -1 if too big otherwise the begaining
 // basic first fit
-int find_optimal_mem_loc(size_t size) {
-	if (size <= 0) return -1;
-	allocation_ticket* a1;
-	allocation_ticket* a2;
-	if (myAlloc->allocs->size == 0) return 0;
-	if (getAllocationTicket(0)->first.first - 0 >= size) return 0;
-	for (size_t i = 0; i < myAlloc->allocs->size - 1; i++) {
-		a1 = getAllocationTicket(i);
-		a2 = getAllocationTicket(i + 1);
-		if (a2->first.first - a1->first.second >= size) return a1->first.second + 1;
+int find_optimal_mem_loc(int size) {
+	if (myAlloc->allocated.size() == 0) {
+		myAlloc->free[0].first.first += size + 1;
+		return 0;
 	}
-	// between the last alloc and the end
-	allocation_ticket* last = getAllocationTicket(myAlloc->allocs->size-1);
-	if (last == NULL) return -1;
-	if (myAlloc->maxAdder - last->first.second >= size) return last->first.second + 1;
+	for (size_t i = 0; i < myAlloc->free.size(); i++) {
+		allocation_ticket space = myAlloc->free[i];
+		if (space.first.second - space.first.first >= size) {
+			int val = space.first.first;
+			myAlloc->free[i].first.first += size + 1;
+			return val;
+		}
+	}
 	return -1;
+}
+
+size_t findInsertLoc(allocation_ticket ticket) {
+	if (myAlloc->allocated.size() == 0) return 0;
+	int start = ticket.first.first;
+	if (start < getAllocationTicket(0)->first.first) return 0;
+	for (size_t i = 1; i < myAlloc->allocated.size(); i++) {
+		if (getAllocationTicket(i)->first.first > start) return i;
+	}
+	return myAlloc->allocated.size();
 }
 
 void getMem(size_t size, size_t exp) {
@@ -102,6 +104,7 @@ void getMem(size_t size, size_t exp) {
 
 	#if DEBUG
 	printfAllocationTickets();
+	printFreeSpace();
 	#endif
 	if (size <= 0) {
 		myAlloc->requests_unsatisfied++;
@@ -119,40 +122,44 @@ void getMem(size_t size, size_t exp) {
 	#if DEBUG
 	printf("TICK: idx| Found open spot [%d, %lu]\n", start, start + size);
 	#endif
-	allocation_ticket* ticket = make_allocation_ticket(start, start + size, clock + exp);
-	myAlloc->allocs->insert(myAlloc->allocs, ticket);
+	allocation_ticket ticket = make_allocation_ticket(start, start + size, clock_tick + exp);
+	size_t inserLoc = findInsertLoc(ticket);
+	myAlloc->allocated.insert(myAlloc->allocated.begin() + inserLoc, ticket);
 	myAlloc->requests_satisfied++;
+	#if DEBUG
+	printf("\n\n");
+	#endif
 	return;
 }
 
+bool cmp (allocation_ticket a1, allocation_ticket a2) {
+	return a1.first.first < a2.first.first;
+}
+
+void condenseFreeList() {
+	std::sort(myAlloc->free.begin(), myAlloc->free.end(), &cmp);
+	for (size_t i = 0; i < myAlloc->free.size()-1; i++) {
+		if (myAlloc->free[i].first.second == myAlloc->free[i+1].first.first - 1) {
+			myAlloc->free[i].first.second = myAlloc->free[i+1].first.second;
+			myAlloc->free.erase(myAlloc->free.begin()+i+1);
+		}
+	}
+}
+
 void cleanExpired(size_t tick) {
-	for (size_t i = 0; i < myAlloc->allocs->size; i++) {
+	for (size_t i = 0; i < myAlloc->allocated.size(); i++) {
 		size_t expires = getAllocationTicket(i)->second;
 		if (tick >= expires) {
 			#if DEBUG
 			printf("TICK: %lu | Removing ticket #%lu with exp %lu\n", tick, i, expires);
 			#endif
-			myAlloc->allocs->remove(myAlloc->allocs, i);
+			allocation_ticket expTicket = myAlloc->allocated[i];
+			myAlloc->free.push_back(make_allocation_ticket(expTicket.first.first, expTicket.first.second, -1));
+			myAlloc->allocated.erase(myAlloc->allocated.begin() + i);
 			i--;
 		}
 	}
-}
-
-int setMaxMemSize(size_t size) {
-	// larger resizes are always okay
-	if (size > myAlloc->maxAdder) {
-		myAlloc->maxAdder = size;
-		return 0;
-	// if there are no current allocations
-	} else if (myAlloc->allocs->size == 0) {
-		myAlloc->maxAdder = size;
-		return 0;
-	// if the end of the last allocation is smaller than the new size
-	} else if (((allocation_ticket*)myAlloc->allocs->get(myAlloc->allocs, myAlloc->allocs->size-1))->first.second <= size){
-		myAlloc->maxAdder = size;
-		return 0;
-	// new size failed
-	} else return 1;
+	condenseFreeList();
 }
 
 void myAllocClean() {
@@ -166,6 +173,4 @@ void myAllocClean() {
 	printfAllocationTickets();
 	printf("State of free memory\n");
 	printFreeSpace();
-	freeSortedLinkedList(myAlloc->allocs);
-	free(myAlloc);
 }

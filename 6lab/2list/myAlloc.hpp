@@ -3,7 +3,7 @@
 
 #include <cstddef>
 #include <utility>
-#include "list.h"
+#include <vector>
 
 #define DEFAULT_MAX_ADDRESS 1000
 
@@ -17,11 +17,12 @@
 
 #define DEBUG 0
 
-typedef std::pair<size_t, size_t> range;
-typedef std::pair<range, size_t> allocation_ticket;
+typedef std::pair<int , int> range;
+typedef std::pair<range, int> allocation_ticket;
 
 struct Allocator {
-	SortedLinkedList* allocs;
+	std::vector<allocation_ticket> free;
+	std::vector<allocation_ticket> allocated;
 	size_t maxAdder;
 
 	int number_of_requests;
