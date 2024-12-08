@@ -1,3 +1,6 @@
+#ifndef DICT_HPP
+#define DICT_HPP
+
 #include <set>
 #include <map>
 #include <queue>
@@ -30,3 +33,5 @@ void printHistogram(const DICTION &d);
 void initDiction(DICTION &d);
 void printStats(const DICTION &d);
 void insertWord(WORD word, DICTION &d);
+
+#endif
