@@ -1,14 +1,18 @@
 // Copyright 2024 Morgan Nilsson
 #include "dict.hpp"
+#include <cstdio>
 #include <iostream>
+#include <queue>
+#include <utility>
+#include <vector>
 
 #define HISTOGRAM_SPACING_SIZE 1
 
-char l;  // im too lazy to put this in its caller it belongs to updateStats
+char l;  // im too lazy to put this in its caller it belongs to updateStatsini
 void updateStats(const char c, DICTION &d) {
 	if (!isalpha(l) && isalpha(c)) std::get<1>(d.stats)++;
-	else if (c =='\n') std::get<2>(d.stats)++;  // nl and whitespace is not letters
-	else std::get<0>(d.stats)++;
+	else if (c =='\n') std::get<2>(d.stats)++;  // nl is not letters
+	if (c != '\n') std::get<0>(d.stats)++;
 	l = c;
 }
 
@@ -86,10 +90,15 @@ void printHistogram(const DICTION &d) {
 	std::string longestSpacer;
 	for (int i = 0; i < longestWord; i++) longestSpacer += ' ';
 
+	std::vector<std::pair<int, WORD>>freqSortedByLength(d.freqWord.begin(), d.freqWord.end());
+	std::sort(freqSortedByLength.begin(), freqSortedByLength.end(), [](std::pair<int, WORD> el1, std::pair<int, WORD> el2) {
+		return el1.second.size() < el2.second.size();
+	});
+
 	// print dots
 	for (int i = highFreq; i >= 0; i--) {
 		std::cout << longestSpacer;
-		for (auto it = d.freqWord.begin(); it != d.freqWord.end(); it++) {
+		for (auto it = freqSortedByLength.begin(); it != freqSortedByLength.end(); it++) {
 			if (it->first > i) std::cout << '*';
 			else std::cout << ' ';
 			std::cout << spacer;
@@ -111,20 +120,20 @@ void printHistogram(const DICTION &d) {
 	std::cout << '\n';
 
 	// print the words and stuff
-	for (auto it = d.freqWord.begin(); it != d.freqWord.end(); it++) {
+	for (auto it = freqSortedByLength.begin(); it != freqSortedByLength.end(); it++) {
 		// word
 		std::cout << it->second;
 		// spacing to the longest word
 		for (int i = it->second.size(); i < longestWord; i++) std::cout << ' ';
 		// bars to the up arrow
-		for (size_t i = 0; i < (d.freqWord.size() - std::distance(it, d.freqWord.end())) * (HISTOGRAM_SPACING_SIZE + 1); i++) {
+		for (size_t i = 0; i < (d.freqWord.size() - std::distance(it, freqSortedByLength.end())) * (HISTOGRAM_SPACING_SIZE + 1); i++) {
 			std::cout << '-';
 		}
 		// direction switchers
 		std::cout << '/';
 		std::cout << spacer;
 		// vertical lines
-		for (int i = 1; i < std::distance(it, d.freqWord.end()); i++) {
+		for (int i = 1; i < std::distance(it, freqSortedByLength.end()); i++) {
 			std::cout << '|';
 			std::cout << spacer;
 		}
@@ -135,6 +144,9 @@ void printHistogram(const DICTION &d) {
 
 void initDiction(DICTION &d) {
 	for (int i = 'a'; i <= 'z'; i++) {
+		d.wordFreq[(char)i] = 0;
+	}
+	for (int i = 'A'; i <= 'Z'; i++) {
 		d.wordFreq[(char)i] = 0;
 	}
 	std::get<1>(d.stats) = 0;
@@ -149,9 +161,9 @@ WORD getNextWord(DICTION &d) {
 		// "Words with different cases are considered to be different"
 		// uncomment the lines if not true
 		// ch = (ch >= 65 && ch <= 90) ? ch+32: ch
-		updateStats((ch >= 65 && ch <= 90) ? ch+32: ch, d); // updateStats(ch, d);
+		updateStats(ch, d); // updateStats(ch, d);
 		if ( isalpha(ch) ) {  // is ch in [A-Z, a-z]
-			updateLetterFreq((ch >= 65 && ch <= 90) ? ch+32: ch, d); // updateLetterFreq(ch, d);
+			updateLetterFreq(ch, d); // updateLetterFreq(ch, d);
 			w.push_back(ch);
 			inWord = true;
 		} else if (inWord) {
